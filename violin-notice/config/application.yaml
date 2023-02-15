@@ -1,0 +1,21 @@
+server:
+  name: violin-notice
+  addr: "127.0.0.1:80"
+
+zap:
+  debugFileName: "E:\\log\\notice\\debug.log"
+  infoFileName: "E:\\log\\notice\\info.log"
+  warnFileName: "E:\\log\\notice\\warn.log"
+  maxSize: 500
+  maxAge: 28
+  maxBackups: 3
+
+redis:
+  host: "localhost"
+  port: 6379
+  password: "123456"
+  db: 3
+
+grpc:
+  name: notice-service
+  addr: "127.0.0.1:8081"

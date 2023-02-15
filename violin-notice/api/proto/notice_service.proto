@@ -1,1 +1,17 @@
-package proto
+syntax = "proto3";
+
+package notice.service.v1;
+
+option go_package ="violin-notice/pkg/service/notice.service.v1";
+
+message NoticeMessage {
+
+};
+
+message NoticeResponse {};
+
+service NoticeService {
+  rpc SendNotice(NoticeMessage) returns (NoticeResponse) {}
+}
+
+
