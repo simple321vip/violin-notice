@@ -30,9 +30,15 @@ func InitConfig() *Config {
 	v := viper.New()
 	config := &Config{viper: v}
 	workDir, _ := os.Getwd()
-	config.viper.SetConfigName("application")
-	config.viper.SetConfigType("yaml")
-	config.viper.AddConfigPath(workDir + "/config")
+	if ginMODE := os.Getenv("GIN_MODE"); ginMODE == "release" {
+		config.viper.SetConfigName("application_prod")
+		config.viper.SetConfigType("yaml")
+		config.viper.AddConfigPath(workDir + "/config")
+	} else {
+		config.viper.SetConfigName("application")
+		config.viper.SetConfigType("yaml")
+		config.viper.AddConfigPath(workDir + "/config")
+	}
 	err := v.ReadInConfig()
 
 	if err != nil {
@@ -42,7 +48,10 @@ func InitConfig() *Config {
 	config.ReadServerConfig()
 	config.ReadLogsConfig()
 	config.ReadGrpcServerConfig()
-	logs.InitConfig(config.LC)
+	if err := logs.InitConfig(config.LC); err != nil {
+		log.Println("************ log init failure **************")
+	}
+	logs.LG.Info("LOG INIT SUCCESSFUL")
 	return config
 }
 
@@ -63,6 +72,7 @@ func (c *Config) ReadGrpcServerConfig() {
 }
 
 func (c *Config) ReadLogsConfig() {
+
 	lc := &logs.LogConfig{
 		DebugFileName: c.viper.GetString("zap.debugFileName"),
 		InfoFileName:  c.viper.GetString("zap.infoFileName"),
@@ -71,5 +81,6 @@ func (c *Config) ReadLogsConfig() {
 		MaxAge:        c.viper.GetInt("zap.maxAge"),
 		MaxBackups:    c.viper.GetInt("zap.maxBackups"),
 	}
+
 	c.LC = lc
 }

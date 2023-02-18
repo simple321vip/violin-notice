@@ -9,6 +9,7 @@ import (
 	"os/signal"
 	"syscall"
 	"time"
+	"violin-home.cn/common/logs"
 )
 
 func Run(eg *gin.Engine, srvName string, addr string, stop func()) {
@@ -20,6 +21,7 @@ func Run(eg *gin.Engine, srvName string, addr string, stop func()) {
 		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 			log.Printf("%s", err)
 		}
+		logs.LG.Info("VIOLIN-NOTICE SERVER STARTED SUCCESSFUL")
 	}()
 
 	quit := make(chan os.Signal)
@@ -40,9 +42,9 @@ func Run(eg *gin.Engine, srvName string, addr string, stop func()) {
 
 	select {
 	case <-ctx.Done():
-		log.Println("time out")
+		logs.LG.Info("VIOLIN-NOTICE SERVER STOPPING TIMEOUT")
 	}
 
-	log.Println("Shutdown is successful!")
+	logs.LG.Info("VIOLIN-NOTICE SERVER STOP SUCCESSFUL")
 
 }

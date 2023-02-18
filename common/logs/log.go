@@ -18,7 +18,7 @@ type LogConfig struct {
 
 var LG *zap.Logger
 
-func InitConfig(cfg *LogConfig) {
+func InitConfig(cfg *LogConfig) error {
 
 	infoLogger := &lumberjack.Logger{
 		Filename:   cfg.InfoFileName,
@@ -65,7 +65,7 @@ func InitConfig(cfg *LogConfig) {
 
 	LG = zap.New(core, zap.AddCaller())
 	zap.ReplaceGlobals(LG)
-	return
+	return nil
 }
 
 func getEncoder() zapcore.Encoder {
