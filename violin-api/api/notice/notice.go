@@ -22,6 +22,7 @@ func (nh *Handler) getNotice(ctx *gin.Context) {
 	resp, err := Clinet.SendNotice(c, &noticeServiceV1.NoticeMessage{})
 
 	if err != nil {
+		log.Println(err)
 		ctx.JSON(http.StatusOK, result.Fail(2001, "s"))
 	}
 	log.Println(resp)

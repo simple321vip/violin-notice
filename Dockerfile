@@ -1,18 +1,34 @@
 # STAGE 1
 FROM golang AS build
 
-ENV location /go/src/github.com/grpc-up-and-running/samples/ch07/grpc-docker/go
-WORKDIR ${location}/server
+WORKDIR /violin-notice
 
-ADD ./server ${location}/server
-ADD ./proto-gen ${location}/proto-gen
+COPY . /violin-notice
 
-RUN go get -d ./...
-RUN go install ./...
+RUN go env -w GOPROXY=https://goproxy.cn,direct
 
-RUN CGO_ENABLED=0 go build -o /bin/grpc-productinfo-server
+WORKDIR /violin-notice/common
+
+RUN go mod tidy
+
+WORKDIR /violin-notice/violin-notice
+
+RUN go mod tidy
+
+RUN CGO_ENABLED=0 go build -o grpc-notice-server
 
 # STAGE 2
-FROM scratch
-COPY --from=build /bin/grpc-productinfo-server /bin/grpc-productinfo-server
-ENTRYPOINT ["/bin/grpc-productinfo-server"]
+FROM alpine as work
+
+WORKDIR /violin-notice/violin-notice
+
+COPY --from=build /violin-notice/violin-notice/grpc-notice-server ./grpc-notice-server
+
+COPY --from=build /violin-notice/violin-notice/config ./config
+
+# notice grpc service port
+EXPOSE 8081
+
+EXPOSE 80
+
+ENTRYPOINT ["./grpc-notice-server"]
