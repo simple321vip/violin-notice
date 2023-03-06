@@ -2,11 +2,9 @@ package main
 
 import (
 	"fmt"
-	"go.mongodb.org/mongo-driver/mongo"
 	"os"
 	"os/signal"
 	"syscall"
-	_ "violin-home.cn/violin-notice/api"
 	"violin-home.cn/violin-notice/config"
 	"violin-home.cn/violin-notice/grpc"
 )
@@ -27,8 +25,4 @@ func main() {
 
 	s := <-quit
 	fmt.Println(s)
-}
-
-func Scheduler() {
-	mongo.NewClient()
 }

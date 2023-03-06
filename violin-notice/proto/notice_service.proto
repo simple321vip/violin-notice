@@ -4,8 +4,12 @@ package notice.service.v1;
 
 option go_package ="violin-notice/pkg/service/notice.service.v1";
 
-message NoticeMessage {
-
+message NoticeList {
+  repeated string NoticeId = 1;
+  string NoticeFrom = 2;
+  string NoticeTO = 3;
+  string NoticeStatus = 4;
+  string NoticeMethod = 5;
 };
 
 message NoticeResponse {};

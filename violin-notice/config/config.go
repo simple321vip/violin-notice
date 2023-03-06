@@ -110,6 +110,6 @@ func ConnectToDB(conf *Config) {
 	if err = client.Ping(context.TODO(), nil); err != nil {
 		panic(err)
 	}
-	logs.LG.Info("SUCCESSFULLY CONNECTED AND PINGED.")
+	logs.LG.Info("MONGODB IS CONNECTED AND PINGED SUCCESSFULLY.")
 	MongoDBClient = client.Database(conf.MC.DB)
 }

@@ -2,9 +2,12 @@ package notice_service_v1
 
 import (
 	"context"
+	"go.mongodb.org/mongo-driver/bson"
 	"gopkg.in/gomail.v2"
 	"log"
 	"violin-home.cn/common/logs"
+	"violin-home.cn/violin-notice/config"
+	"violin-home.cn/violin-notice/model"
 )
 
 type NoticeService struct {
@@ -30,13 +33,22 @@ type mail struct {
 func (*NoticeService) SendNotice(
 	ctx context.Context, msg *NoticeMessage) (*NoticeResponse, error) {
 
-	logs.LG.Info("VIOLIN-NOTICE GRPC SERVICE CALLED SUCCESSFUL")
+	logs.LG.Debug("VIOLIN-NOTICE GRPC SERVICE CALLED SUCCESSFULLY")
+
+	var TBlog *model.TBlog
+	col := config.MongoDBClient.Collection("t_blog")
+	filter := bson.D{{"bid", "2022103011580500000000000004"}}
+	err := col.FindOne(context.TODO(), filter).Decode(&TBlog)
+	if err != nil {
+		logs.LG.Error("QUERY IS FAILURE.")
+	}
+	logs.LG.Debug(TBlog.Title)
 	// 1. 获取参数
 
 	// 2. 校验参数
 
 	// 3. 生成验证码
-	m := &mail{
+	_ = &mail{
 		senderAddr:   "simple321@vip.qq.com",
 		senderName:   "guan",
 		receiverAddr: nil,
@@ -49,10 +61,6 @@ func (*NoticeService) SendNotice(
 	}
 
 	// 4. 调用短信平台
-	logs.LG.Info(m.text)
-
-	//SendMail(m)
-
 	return &NoticeResponse{}, nil
 }
 
