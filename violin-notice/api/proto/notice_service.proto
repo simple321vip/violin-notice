@@ -12,6 +12,7 @@ message NoticeResponse {};
 
 service NoticeService {
   rpc SendNotice(NoticeMessage) returns (NoticeResponse) {}
+  rpc CreateNotice(NoticeMessage) returns (NoticeResponse) {}
 }
 
 

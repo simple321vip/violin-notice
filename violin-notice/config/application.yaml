@@ -19,3 +19,7 @@ redis:
 grpc:
   name: notice-service
   addr: "0.0.0.0:8081"
+
+mongodb:
+  uri: "mongodb://127.0.0.1:27017/?maxPoolSize=20&w=majority"
+  db: "violin"

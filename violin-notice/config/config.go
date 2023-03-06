@@ -1,17 +1,23 @@
 package config
 
 import (
+	"context"
 	"github.com/spf13/viper"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 	"log"
 	"os"
 	"violin-home.cn/common/logs"
 )
+
+var MongoDBClient *mongo.Database
 
 type Config struct {
 	viper *viper.Viper
 	SC    *ServerConfig
 	GC    *GrpcServerConfig
 	LC    *logs.LogConfig
+	MC    *MongoDBConfig
 }
 
 type ServerConfig struct {
@@ -24,7 +30,10 @@ type GrpcServerConfig struct {
 	Addr string
 }
 
-var Conf = InitConfig()
+type MongoDBConfig struct {
+	Uri string
+	DB  string
+}
 
 func InitConfig() *Config {
 	v := viper.New()
@@ -48,9 +57,11 @@ func InitConfig() *Config {
 	config.ReadServerConfig()
 	config.ReadLogsConfig()
 	config.ReadGrpcServerConfig()
+	config.ReadMongoDBConfig()
 	if err := logs.InitConfig(config.LC); err != nil {
 		log.Println("************ log init failure **************")
 	}
+
 	logs.LG.Info("LOG INIT SUCCESSFUL")
 	return config
 }
@@ -83,4 +94,22 @@ func (c *Config) ReadLogsConfig() {
 	}
 
 	c.LC = lc
+}
+
+func (c *Config) ReadMongoDBConfig() {
+
+	c.MC = &MongoDBConfig{Uri: c.viper.GetString("mongodb.uri"), DB: c.viper.GetString("mongodb.db")}
+}
+
+func ConnectToDB(conf *Config) {
+	clientOptions := options.Client().ApplyURI(conf.MC.Uri)
+	client, err := mongo.Connect(context.TODO(), clientOptions)
+	if err != nil {
+		panic(err)
+	}
+	if err = client.Ping(context.TODO(), nil); err != nil {
+		panic(err)
+	}
+	logs.LG.Info("SUCCESSFULLY CONNECTED AND PINGED.")
+	MongoDBClient = client.Database(conf.MC.DB)
 }

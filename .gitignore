@@ -1,7 +1,5 @@
-<<<<<<< HEAD
 # Go
-=======
->>>>>>> fd1b1b0dab2c07ea28cc7e1aa4e2c22d0e917de2
+
 # Binaries for programs and plugins
 *.exe
 *.exe~
