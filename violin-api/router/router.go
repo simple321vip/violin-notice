@@ -11,10 +11,6 @@ var routers []Router
 type RegisterRouter struct {
 }
 
-func NewRegisterRouter() *RegisterRouter {
-	return &RegisterRouter{}
-}
-
 func (rg *RegisterRouter) Route(ro Router, r *gin.Engine) {
 	ro.Route(r)
 }

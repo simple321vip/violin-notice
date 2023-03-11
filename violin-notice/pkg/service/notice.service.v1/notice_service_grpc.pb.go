@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.2.0
 // - protoc             v3.21.12
-// source: notice_service.proto
+// source: reminder_service.proto
 
 package notice_service_v1
 
@@ -101,5 +101,5 @@ var NoticeService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "notice_service.proto",
+	Metadata: "reminder_service.proto",
 }

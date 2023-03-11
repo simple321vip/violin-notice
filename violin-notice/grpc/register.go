@@ -6,6 +6,7 @@ import (
 	"violin-home.cn/common/logs"
 	"violin-home.cn/violin-notice/config"
 	noticeServiceV1 "violin-home.cn/violin-notice/pkg/service/notice.service.v1"
+	reminderServiceV1 "violin-home.cn/violin-notice/pkg/service/reminder.service.v1"
 )
 
 type gRPCConfig struct {
@@ -19,6 +20,7 @@ func RegisterGrpcServer(conf *config.Config) *grpc.Server {
 		Addr: conf.GC.Addr,
 		RegisterFunc: func(server *grpc.Server) {
 			noticeServiceV1.RegisterNoticeServiceServer(server, noticeServiceV1.New())
+			reminderServiceV1.RegisterReminderServiceServer(server, reminderServiceV1.New())
 		},
 	}
 

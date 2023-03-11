@@ -4,19 +4,19 @@ package notice.service.v1;
 
 option go_package ="violin-notice/pkg/service/notice.service.v1";
 
-message NoticeList {
-  repeated string NoticeId = 1;
-  string NoticeFrom = 2;
-  string NoticeTO = 3;
+message NoticeMessage {
+  string tenantId = 1;
+  string title = 2;
+  string info = 3;
   string NoticeStatus = 4;
   string NoticeMethod = 5;
+  repeated string type = 6;
 };
 
 message NoticeResponse {};
 
-service NoticeService {
+service ReminderService {
   rpc SendNotice(NoticeMessage) returns (NoticeResponse) {}
-  rpc CreateNotice(NoticeMessage) returns (NoticeResponse) {}
 }
 
 

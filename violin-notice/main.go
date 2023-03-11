@@ -13,9 +13,9 @@ func main() {
 
 	conf := config.InitConfig()
 
-	grpc.RegisterGrpcServer(conf)
-
 	config.ConnectToDB(conf)
+
+	grpc.RegisterGrpcServer(conf)
 
 	// 创建监听退出chan
 	quit := make(chan os.Signal)

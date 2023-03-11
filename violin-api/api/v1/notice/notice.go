@@ -7,19 +7,20 @@ import (
 	"net/http"
 	"time"
 	"violin-home.cn/common"
+	"violin-home.cn/violin-api/grpc"
 	noticeServiceV1 "violin-home.cn/violin-notice/pkg/service/notice.service.v1"
 )
 
 type Handler struct {
 }
 
-func (nh *Handler) getNotice(ctx *gin.Context) {
+func (nh *Handler) GetNotice(ctx *gin.Context) {
 
 	result := &common.Result{}
 	c, cancel := context.WithTimeout(context.Background(), 2*time.Second)
 	defer cancel()
 
-	resp, err := Clinet.SendNotice(c, &noticeServiceV1.NoticeMessage{})
+	resp, err := grpc.Clinet.SendNotice(c, &noticeServiceV1.NoticeMessage{})
 
 	if err != nil {
 		log.Println(err)
