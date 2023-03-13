@@ -3,6 +3,7 @@ package reminder
 import (
 	"context"
 	"github.com/gin-gonic/gin"
+	"github.com/go-playground/validator/v10"
 	"log"
 	"net/http"
 	"time"
@@ -14,27 +15,37 @@ import (
 type Handler struct {
 }
 
+type RequestReminder struct {
+	ReminderId string `form:"reminder_id" xml:"reminder_id" binding:"required"`
+	Title      string `form:"title" xml:"title" binding:"required"`
+	Info       string `form:"info" xml:"info" binding:"required"`
+	//Type       []string `json:"type" xml:"type" binding:"required"`
+	//ReminderDate string   `json:"reminder_date" xml:"reminder_date" binding:"required" validate:"datetime=2020-02-20"`
+}
+
 func (nh *Handler) CreateReminder(ctx *gin.Context) {
 
+	var rr RequestReminder
+	if err := ctx.ShouldBind(&rr); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	validate := validator.New()
+
+	err := validate.Struct(rr)
+
 	result := &common.Result{}
-
-	title := ctx.PostForm("title")
-	info := ctx.PostForm("info")
-	//t := ctx.PostForm("type")
-	ti := ctx.PostForm("time")
-
-	tenantId := ctx.PostForm("time")
 
 	c, cancel := context.WithTimeout(context.Background(), 2*time.Second)
 	defer cancel()
 
 	resp, err := grpc.Clinet2.CreateReminder(c, &reminderServiceV1.ReminderMessage{
-		ReminderId: "3333333",
-		Title:      title,
-		Info:       info,
-		Type:       nil,
-		Time:       ti,
-		TenantId:   tenantId,
+		Title:    rr.Title,
+		Info:     rr.Info,
+		Type:     []string{},
+		Time:     "",
+		TenantId: "xxxx",
 	})
 
 	if err != nil {
@@ -103,7 +114,7 @@ func (nh *Handler) UpdateReminder(ctx *gin.Context) {
 func (nh *Handler) QueryReminder(ctx *gin.Context) {
 
 	result := &common.Result{}
-	reminderId := ctx.PostForm("reminderId")
+	reminderId := ctx.Query("")
 	c, cancel := context.WithTimeout(context.Background(), 2*time.Second)
 	defer cancel()
 
