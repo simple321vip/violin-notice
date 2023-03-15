@@ -5,6 +5,7 @@ import (
 	"violin-home.cn/common"
 	"violin-home.cn/violin-api/config"
 	"violin-home.cn/violin-api/grpc"
+	"violin-home.cn/violin-api/redis"
 	"violin-home.cn/violin-api/router"
 
 	_ "violin-home.cn/violin-api/api/v1"
@@ -17,6 +18,9 @@ func main() {
 
 	// router
 	router.InitRouter(r)
+
+	// redis
+	redis.NewRedisClient()
 
 	// grpc client
 	grpc.InitGrpcClient()

@@ -15,18 +15,19 @@ import (
 type Handler struct {
 }
 
+// RequestReminder https://pkg.go.dev/github.com/go-playground/validator/v10#section-readme /**
 type RequestReminder struct {
-	ReminderId string `form:"reminder_id" xml:"reminder_id" binding:"required"`
-	Title      string `form:"title" xml:"title" binding:"required"`
-	Info       string `form:"info" xml:"info" binding:"required"`
-	//Type       []string `json:"type" xml:"type" binding:"required"`
-	//ReminderDate string   `json:"reminder_date" xml:"reminder_date" binding:"required" validate:"datetime=2020-02-20"`
+	ReminderId   string   `form:"reminder_id" xml:"reminder_id"`
+	Title        string   `form:"title" xml:"title" binding:"required"`
+	Info         string   `form:"info" xml:"info" binding:"required"`
+	Type         []string `json:"type" xml:"type" binding:"required" validate:"oneof=='email' 'phone'"`
+	ReminderDate string   `json:"reminder_date" xml:"reminder_date" binding:"required" validate:"datetime=2020-02-20"`
 }
 
 func (nh *Handler) CreateReminder(ctx *gin.Context) {
 
 	var rr RequestReminder
-	if err := ctx.ShouldBind(&rr); err != nil {
+	if err := ctx.ShouldBindJSON(&rr); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -51,6 +52,7 @@ func (nh *Handler) CreateReminder(ctx *gin.Context) {
 	if err != nil {
 		log.Println(err)
 		ctx.JSON(http.StatusOK, result.Fail(2001, "s"))
+		return
 	}
 	log.Println(resp)
 	ctx.JSON(http.StatusOK, result.Success(resp))
@@ -70,10 +72,8 @@ func (nh *Handler) DeleteReminder(ctx *gin.Context) {
 	})
 
 	if err != nil {
-		log.Println(err)
 		ctx.JSON(http.StatusOK, result.Fail(2001, "s"))
 	}
-	log.Println(resp)
 	ctx.JSON(http.StatusOK, result.Success(resp))
 
 }
